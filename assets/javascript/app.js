@@ -1,4 +1,3 @@
-let eta
 
 // Initialize Firebase
 var config = {
@@ -13,8 +12,9 @@ firebase.initializeApp(config);
 
 const db = firebase.firestore()
 
+//On Clicking submit, we store all the fields into the db
 document.querySelector('#submit').addEventListener('click', e => {
-    calcTime()
+    
     e.preventDefault()
 
     let id = db.collection('schedule').doc().id
@@ -24,12 +24,9 @@ document.querySelector('#submit').addEventListener('click', e => {
         destination: document.querySelector(`#destination_name`).value,
         firstTrain: document.querySelector(`#train_time`).value,
         frequency: parseInt(document.querySelector(`#frequency`).value),
-        eta: etaDoc,
-        arrival: nextArrival
 
     })
-   // console.log(doc.id)
-    //console.log(document.querySelector(`#train_time`).value)
+
     document.querySelector(`#train_name`).value = ''
     document.querySelector(`#destination_name`).value = ''
     document.querySelector(`#train_time`).value = ''
@@ -37,72 +34,64 @@ document.querySelector('#submit').addEventListener('click', e => {
 })
 
 
-
+//Viewing the next arrival time along with some of the information we provided.
+//Note ETA and next arrival in minutes are calculated and never stored in the db
 db.collection('schedule').onSnapshot(({ docs }) => {
     
     document.querySelector('#info').innerHTML = ''
 
     docs.forEach(doc => {
-        let { train, destination, firstTrain, frequency, eta, arrival } = doc.data()
+        let { train, destination, firstTrain, frequency} = doc.data()
+
+        calcTime(firstTrain, frequency)
 
         let tableBody = document.createElement('tr')
         tableBody.innerHTML = `
                 <td>${train}</td>
                 <td>${destination}</td>
                 <td>${frequency}</td>
-                <td>${eta}</td>
-                <td>${arrival}</td>
+                <td>${eta.format("HH:mm")}</td>
+                <td>${nextArrival}</td>
             `
         document.querySelector('#info').append(tableBody)
     })
 
-
-
 })
 
+//variables to calculate next arrival and eta.
 let nextArrival
 let remainder
-const calcTime = () => {
-    //let now = moment(new Date())
+let eta
+
+//Function to calculate the next time of arrival and time left until arrival.
+//User must provide the initial train arrival time and frequency by submitting these values through the db
+const calcTime = (firstTrain, frequency) => {
+ 
     let now = moment()
-    //let nowM = moment(now)
-    let time = document.querySelector(`#train_time`).value
-    console.log(time)
+    let time = firstTrain
     let time2 = moment(time, "HH:mm:ss")
-    //let timeM =moment(time2)
 
-    console.log(moment.isMoment(time2))
-    console.log(moment.isMoment(now))
-
-    console.log(now.format("HH:mm"))
-    console.log(time2)
-
-    console.log(now.diff(time2, 'minutes'))
-
+    //duration between first train time and current time
     let dur = now.diff(time2, 'minutes')
 
-    console.log(dur)
-    remainder = dur % parseInt(document.querySelector(`#frequency`).value)
-    console.log(remainder)
+    //Remainder is used to calculate The time remaining until current time
+    remainder = dur % parseInt(frequency)
 
-
-
+    //If duration is greater than 0 that means the first train left before current time
     if (dur >= 0) {
 
-        nextArrival = parseInt(document.querySelector(`#frequency`).value) - remainder
+        //So next arrival will be the difference between frequency and remainder of time left until current time
+        //Adding nextArrival to current time will give us the next arrival time.
+        nextArrival = parseInt(frequency) - remainder
         eta = now.add(nextArrival, 'minutes')
 
-        console.log(eta.format("HH:mm:ss"))
-        console.log(nextArrival)
-        etaDoc = eta.format("HH:mm:ss")
     }
+    //if duration is a negative number, that means the first train has not arrived yet
     else {
-        console.log(now.format("HH:mm:ss"))
+        //in this case the eta is the first train arrival that the user inputs
         eta = time2
-        console.log(eta.format("HH:mm:ss"))
+        //nextArrival is the difference between now and the first train arrival
         nextArrival = -(now.diff(time2, 'minutes'))
-        console.log(nextArrival)
-        etaDoc = eta.format("HH:mm:ss")
     }
 
 }
