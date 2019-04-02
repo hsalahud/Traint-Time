@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="row container">
+        <form class="col s12">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="train_name" type="text" class="validate">
+                    <label for="train_name">Train Name</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="destination_name" type="text" class="validate">
+                    <label for="destination_name">Destination</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="train_time" type="text" class="timepicker">
+                    <label for="train_time">First Train Arrival Time</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="frequency" type="number" class="validate">
+                    <label for="frequency">Frequency</label>
+                </div>
+            </div>
+            <button id="submit" class="btn waves-effect waves-light" type="submit" name="action">Submit
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+    </div>
+
+<div class="row container">
+    <table class="col s12 striped centered">
+            <thead>
+              <tr>
+                  <th>Train</th>
+                  <th>Destination</th>
+                  <th>Frequency (in minutes)</th>
+                  <th>ETA</th>
+                  <th>Arrives in (minutes)</th>
+              </tr>
+            </thead>
+    
+            <tbody id="info">
+              <!-- <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr> -->
+              <!-- <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div>
+
+
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
+    <script src="assets/javascript/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let timeElem = document.querySelector('#train_time');
+            let instances = M.Timepicker.init(timeElem, {
+                twelveHour: false,
+            });
+        });
+    </script>
+</body>
+
+</html>
