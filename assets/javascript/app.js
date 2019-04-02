@@ -50,7 +50,7 @@ db.collection('schedule').onSnapshot(({ docs }) => {
                 <td>${train}</td>
                 <td>${destination}</td>
                 <td>${frequency}</td>
-                <td>${eta.format("hh:mm")}</td>
+                <td>${eta.format("hh:mm A")}</td>
                 <td>${nextArrival}</td>
             `
         document.querySelector('#info').append(tableBody)
